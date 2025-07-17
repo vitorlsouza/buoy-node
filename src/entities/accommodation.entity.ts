@@ -1,7 +1,19 @@
-import { Entity, Property, PrimaryKey, OneToMany, Collection } from '@mikro-orm/core';
-import { Booking } from './booking.entity';
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  OneToMany,
+  Collection,
+} from "@mikro-orm/core";
+import { Booking } from "./booking.entity";
 
-@Entity()
+@Entity({
+  discriminatorColumn: "type",
+  discriminatorMap: {
+    apartment: "Apartment",
+    hotel: "Hotel",
+  },
+})
 export class Accommodation {
   @PrimaryKey()
   id!: number;
@@ -9,15 +21,15 @@ export class Accommodation {
   @Property()
   name!: string;
 
-  @Property({ type: 'text', nullable: true })
+  @Property({ type: "text", nullable: true })
   description?: string;
 
-  @Property({ type: 'decimal' })
+  @Property({ type: "decimal" })
   price!: number;
 
   @Property()
   location!: string;
 
-  @OneToMany(() => Booking, booking => booking.accommodation)
+  @OneToMany(() => Booking, (booking) => booking.accommodation)
   bookings = new Collection<Booking>(this);
 }

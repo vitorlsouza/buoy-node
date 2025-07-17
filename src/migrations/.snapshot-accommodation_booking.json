@@ -52,11 +52,79 @@
           "primary": false,
           "nullable": false,
           "mappedType": "string"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "apartment",
+            "hotel"
+          ],
+          "mappedType": "enum"
+        },
+        "total_rooms": {
+          "name": "total_rooms",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "star_rating": {
+          "name": "star_rating",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "bedrooms": {
+          "name": "bedrooms",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "bathrooms": {
+          "name": "bathrooms",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "furnished": {
+          "name": "furnished",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "false",
+          "mappedType": "boolean"
         }
       },
       "name": "accommodation",
       "schema": "public",
       "indexes": [
+        {
+          "columnNames": [
+            "type"
+          ],
+          "composite": false,
+          "keyName": "accommodation_type_index",
+          "primary": false,
+          "unique": false
+        },
         {
           "keyName": "accommodation_pkey",
           "columnNames": [
