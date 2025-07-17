@@ -48,28 +48,93 @@ The frontend needs to, given an accommodation's `id` and a `date`, retrieve the 
 ### Question
 
 - How would you solve this problem?
-- What data or API would you provide to the frontend?
+  Algorithm:
+
+markdown# Problem #3 Solution
+
+## How would you solve this problem?
+
+**Algorithm:**
+
+- Get all bookings for the accommodation where `startDate` is greater than or equal to the provided date
+- If the accommodation is a **hotel**, assume it is always available
+- For **apartments**:
+- Provide the next available date
+
+  - If no bookings are found, the provided date is available
+  - Order the bookings by `startDate`, then verify if the provided date is less than the next reservation's `startDate`
+  - If not, find the first available period between bookings or after the last booking
+
+## What data or API would you provide to the frontend?
+
+I would expose the following endpoints:
+
+### 1. Next Available Date Endpoint
+
+Returns the next available date for the specified accommodation, based on the requested start date.
+
+GET /accommodations/:id/next-available?date={startDate}
+
+```json
+{
+  "accommodationId": 1,
+  "accommodationType": "apartment",
+  "requestedDate": "{startDate}",
+  "nextAvailableDate": "{nextAvailableDate}",
+  "isAvailable": true
+}
+```
+
+### 2. Available Periods Endpoint
+
+Returns a list of all available date ranges between existing bookings for the given accommodation, starting from the specified date.
+
+GET /accommodations/:id/available-periods?date={startDate}
+
+```json
+{
+  "accommodationId": 1,
+  "accommodationType": "apartment",
+  "availablePeriods": [
+    {
+      "startDate": "{startGap1}",
+      "endDate": "{endGap1}"
+    },
+    {
+      "startDate": "{startGap2}",
+      "endDate": "{endGap2}"
+    },
+    {
+      "startDate": "{startAfterLastBooking}",
+      "endDate": null
+    }
+  ]
+}
+```
 
 ## TECH CONTEXT
+
 ### Stack
 
 The main libraries are:
+
 - [Fastify](https://fastify.dev/docs/v4.29.x/)
 - [MikroOrm](https://mikro-orm.io/docs/5.9/quick-start)
 
 ### Docker Setup
+
 To set up the project using Docker Compose, follow these steps:
 
 1. Ensure you have Docker and Docker Compose installed on your machine.
 2. Build and start the Docker containers:
 
-  ```bash
-  docker-compose up --build
-  ```
+```bash
+docker-compose up --build
+```
 
 3. The application should now be running and accessible at `http://localhost:8006`.
 
-### Swagger 
+### Swagger
 
 ```
 http://localhost:8006/documentation
@@ -82,17 +147,20 @@ New migrations are applied every time the server is started.
 Migrations will be needed when an existing entity changes any of it's Properties, is deleted, or a new one is added.
 
 #### Migration creation
+
 1. Stop every running container: `docker compose down`
 2. In one terminal, run the postgres container `docker compose up postgres`
 3. In another terminal, run the following command: `docker-compose run --rm app npm run generate-migration`
 4. If there are changes in the schema, a new migration will be created under `src/migrations`
 
 #### Migration Up
+
 1. Stop every running container: `docker compose down`
 2. In one terminal, run the postgres container `docker compose up postgres`
 3. In another terminal, run the following command: `docker-compose run --rm app npm run migration:up`
 
 #### Migration Down
+
 1. Stop every running container: `docker compose down`
 2. In one terminal, run the postgres container `docker compose up postgres`
 3. In another terminal, run the following command: `docker-compose run --rm app npm run migration:down`
